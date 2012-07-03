@@ -1,8 +1,8 @@
 <html>                                                                  
  <head>                                                                  
-
+ <title>DNSSEC delegations in the .nl zone</title>
 <!--
-Copyright © 2012 PowerDNS.COM BV
+Copyright (C) 2012 PowerDNS.COM BV
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to
@@ -37,12 +37,12 @@ src="jqplot/excanvas.js"></script><![endif]-->
  <script type="text/javascript" src="jquery-1.7.2.min.js"></script>          
 
  <script language="javascript" type="text/javascript" src="jqplot/jquery.jqplot.min.js"></script>
-
- <link rel="stylesheet" type="text/css" href="jqplot/jquery.jqplot.css"/>
  <script type="text/javascript" language="javascript" src="jqplot/plugins/jqplot.dateAxisRenderer.min.js"></script>
  <script type="text/javascript" language="javascript" src="jqplot/plugins/jqplot.barRenderer.min.js"></script>
- <script type="text/javascript" src="jqplot/plugins/jqplot.highlighter.min.js"></script>
- <script type="text/javascript" src="jqplot/plugins/jqplot.cursor.min.js"></script> 
+ <script type="text/javascript" language="javascript" src="jqplot/plugins/jqplot.highlighter.min.js"></script>
+ <script type="text/javascript" language="javascript" src="jqplot/plugins/jqplot.cursor.min.js"></script> 
+  <link rel="stylesheet" type="text/css" href="jqplot/jquery.jqplot.css"/>
+
  <script type="text/javascript" src="moment.min.js"></script>
  <script type="text/javascript">                                         
 
@@ -76,11 +76,13 @@ function plotData(data, textStatus)
 			xaxis: {					  	
 				renderer: $.jqplot.DateAxisRenderer
 			},						  	
+			
 			yaxis:						  	
 			{						  	
-				min: 0,
-				max: 1.3* themaxVal
+				min: 0
+				// max: 1.3* themaxVal
 			},
+		
 		},
 		highlighter: {
 		        show: true,
