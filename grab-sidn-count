@@ -1,2 +1,5 @@
 #!/bin/sh
-echo -n "$(date +%s) ";wget -q --no-check-certificate https://www.sidn.nl/ -O /dev/stdout | grep maxNum | grep param | tail -1 | cut -f4 -d'"' | cut -f2 -d=
+
+A=$(echo "$(date +%s) "; wget -q --no-check-certificate https://www.sidn.nl/ -O /dev/stdout | grep maxNum | grep param | tail -1 | cut -f4 -d'"' | cut -f2 -d=)
+echo $A
+
