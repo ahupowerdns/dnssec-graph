@@ -43,7 +43,7 @@ src="jqplot/excanvas.min.js"></script><![endif]-->
  <script type="text/javascript" src="jqplot/plugins/jqplot.barRenderer.min.js"></script>
  <script type="text/javascript" src="jqplot/plugins/jqplot.highlighter.min.js"></script>
  <script type="text/javascript" src="jqplot/plugins/jqplot.cursor.min.js"></script> 
-
+ <script type="text/javascript" src="jqplot/plugins/jqplot.canvasOverlay.js"></script>
  <script type="text/javascript" src="moment.min.js"></script>
  <script type="text/javascript">                                         
 
@@ -96,6 +96,30 @@ function plotData(data, textStatus)
 			zoom: true,
 			constrainZoomTo: 'x',
 			showCursorLegend: false
+		},
+		canvasOverlay: {
+			show: true,
+			objects: [
+				{horizontalLine: {
+					name: 'brazil',
+					show: true,
+					y: 302188,
+					lineWidth: 3,
+					color: 'rgb(100, 55, 124)',
+					shadow: false
+					}
+				},
+				{horizontalLine: {
+					name: 'cz',
+					show: true,
+					y: 353611,
+					lineWidth: 3,
+					color: 'rgb(200, 55, 24)',
+					shadow: false
+					}
+				}
+				
+				]
 		}
 	});
 	updateAge();								  		
@@ -134,6 +158,11 @@ alt="Fork me on GitHub"></a>
 	 <div id="graph" align="center" style="height:400px;width:90%;"></div>
 	 Data last updated <span id="last-data-point">..</span>
    </center>
+   </p>
+   <p>
+   <font color="#ff0000">Update:</font> as .NL is about to become the ccTLD
+   with the most signed delegations, the blue line represents Brazil, the
+   red line the Czech Republic, the current champions!</font>
    </p>
    <p>
    New <a href="sidn-dnssec-plot">numbers</a> are polled from <a
