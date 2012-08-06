@@ -1,0 +1,5 @@
+#!/bin/sh
+
+A=$(echo "$(date +%s) ";  wget -q -O - http://www.nic.cz/ | grep "DNSSEC</a>:" | tr " " "\n" | grep '<strong>' | cut -f2 -d\> | cut -f1 -d\< )
+echo $A
+

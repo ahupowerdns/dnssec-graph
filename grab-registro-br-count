@@ -1,0 +1,5 @@
+#!/bin/sh
+
+A=$(echo "$(date +%s) ";  wget -q -O - http://registro.br/estatisticas.html | grep stat/dnssec.html | grep href | awk '{print $3}' )
+echo $A
+
