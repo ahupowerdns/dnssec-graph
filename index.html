@@ -99,12 +99,27 @@ function plotData(nldata, czdata, brdata)
 		seriesColors: ["#e38000", "#ff0000", "#0000ff"],
 		seriesDefaults: { 
 			shadow: false,
-			lineWidth: 1,
+			lineWidth: 2,
 			markerOptions: {
-				size: 5,
+				size: 4,
 				shadow: false
 			}
 		},
+		series:[
+			{
+				label: 'Signed NL zones',
+				lineWidth: 2,
+				markerOptions: {
+					size: 3.5
+				}
+			},
+			{
+				label: 'Signed BR zones'
+			},
+			{
+				label: 'Signed CZ zones'
+			}
+		],
 		axes: {							  	
 			xaxis: {					  	
 				renderer: $.jqplot.DateAxisRenderer
