@@ -71,7 +71,8 @@ function plotData(nldata, czdata, brdata)
 	var czpoints=makePoints(czdata);
 	var brpoints=makePoints(brdata);	
 	
-	var themaxVal=0, themaxTime=0;
+	var themaxVal=0;
+	themaxTime=0; // global!
 	
 	for(i = 0; i < nlpoints.length; ++i) {	
 		themaxTime = Math.max(themaxTime, nlpoints[i][0]);
@@ -87,7 +88,6 @@ function plotData(nldata, czdata, brdata)
 		themaxTime = Math.max(themaxTime, brpoints[i][0]);
 		themaxVal = Math.max(themaxVal, brpoints[i][1]);			  	
 	}			
-
 
 	if(theGraph)
 		theGraph.destroy();
@@ -131,7 +131,7 @@ function plotData(nldata, czdata, brdata)
 
 function updateAge()
 {
-	$("#last-data-point").html(moment(themaxTime*1000).fromNow());
+	$("#last-data-point").html(moment(themaxTime).fromNow());
 }
 
 
@@ -179,7 +179,10 @@ alt="Fork me on GitHub"></a>
    </center>
    </p>
    <p>
-   <font color="#ff0000">Update:</font> as .NL is about to become the ccTLD
+   <font color="#ff0000">Update:</font> as .NL <strike>is about
+   to</strike> <a
+   href="https://www.sidn.nl/en/news/news/article/nl-heeft-wereldwijd-hoogste-aantal-dnssec-domeinnamen/">has
+   become</a> the TLD
    with the most signed delegations, the blue line represents <a
    href="http://registro.br/estatisticas.html">Brazil</a>, the
    red line the <a href="http://www.nic.cz">Czech Republic</a>, the current champions!</font>
@@ -194,7 +197,8 @@ alt="Fork me on GitHub"></a>
    <b>all</b> domains are in fact served from PowerDNS.
    </p><p>
    <b>The graph can be zoomed</b> by dragging a box around the time range you want to see; double click to unzoom.
-   </p><p><br></p>
+   </p><p>Got a question or comment? Please contact
+   powerdns.support@netherlabs.nl!</p>
    <!-- AddThis Button BEGIN -->
    <div style="float: right;" class="addthis_toolbox addthis_default_style ">
    <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
