@@ -97,7 +97,14 @@ function plotData(nldata, czdata, brdata)
 		{								  	
 		title: 'Total number of DNSSEC delegations in the .NL zone: '+nlpoints[nlpoints.length-1][1],
 		seriesColors: ["#e38000", "#ff0000", "#0000ff"],
-		seriesDefaults: { shadow: false },
+		seriesDefaults: { 
+			shadow: false,
+			lineWidth: 1,
+			markerOptions: {
+				size: 5,
+				shadow: false
+			}
+		},
 		axes: {							  	
 			xaxis: {					  	
 				renderer: $.jqplot.DateAxisRenderer
@@ -109,14 +116,13 @@ function plotData(nldata, czdata, brdata)
 			}
 		},
 		highlighter: {
-		        show: true,
+		        show: true, 
 		        sizeAdjust: 7.5
 		},
 		cursor: {
 			show: true,
 			showTooltip: false,
 			zoom: true,
-//			constrainZoomTo: 'x',
 			showCursorLegend: false
 		}
 	});
