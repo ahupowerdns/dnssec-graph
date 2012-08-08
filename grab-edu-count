@@ -1,0 +1,5 @@
+#!/bin/sh
+
+A=$(echo "$(date +%s) "; wget -q --no-check-certificate http://scoreboard.verisignlabs.com/dnssecScoreboard.js -O /dev/stdout | grep '<th>edu</th>' | cut -f5 -d\> | cut -f1 -d\< | sed 's|,||' );
+echo $A
+

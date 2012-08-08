@@ -65,11 +65,14 @@ function makePoints(data)
 
 // this function gets passed a string containing "time_t value" lines, and
 // plots it to <div id="graph"/>
-function plotData(nldata, czdata, brdata)
+function plotData(nldata, czdata, brdata, comdata, netdata, edudata)
 {
 	var nlpoints=makePoints(nldata);
 	var czpoints=makePoints(czdata);
-	var brpoints=makePoints(brdata);	
+	var brpoints=makePoints(brdata);
+	var compoints=makePoints(comdata);
+	var netpoints=makePoints(netdata);
+	var edupoints=makePoints(edudata);
 	
 	var themaxVal=0;
 	themaxTime=0; // global!
@@ -87,16 +90,31 @@ function plotData(nldata, czdata, brdata)
 	for(i = 0; i < brpoints.length; ++i) {	
 		themaxTime = Math.max(themaxTime, brpoints[i][0]);
 		themaxVal = Math.max(themaxVal, brpoints[i][1]);			  	
-	}			
+	}
+
+	for(i = 0; i < compoints.length; ++i) {	
+		themaxTime = Math.max(themaxTime, compoints[i][0]);
+		themaxVal = Math.max(themaxVal, compoints[i][1]);			  	
+	}
+
+	for(i = 0; i < netpoints.length; ++i) {	
+		themaxTime = Math.max(themaxTime, netpoints[i][0]);
+		themaxVal = Math.max(themaxVal, netpoints[i][1]);
+	}
+
+	for(i = 0; i < edupoints.length; ++i) {	
+		themaxTime = Math.max(themaxTime, edupoints[i][0]);
+		themaxVal = Math.max(themaxVal, edupoints[i][1]);			  	
+	}
 
 	if(theGraph)
 		theGraph.destroy();
 	$("#graph").html(""); // clear previous graph
 
-	theGraph = $.jqplot("graph", [nlpoints,czpoints,brpoints],
+	theGraph = $.jqplot("graph", [nlpoints,czpoints,brpoints,compoints,netpoints,edupoints],
 		{								  	
 		title: 'Total number of DNSSEC delegations in the .NL zone: '+nlpoints[nlpoints.length-1][1],
-		seriesColors: ["#e38000", "#ff0000", "#0000ff"],
+		seriesColors: ["#e38000", "#ff0000", "#0000ff", "#00f000", "#cccccc", "$000aa0"],
 		seriesDefaults: { 
 			shadow: false,
 			lineWidth: 2,
@@ -118,6 +136,15 @@ function plotData(nldata, czdata, brdata)
 			},
 			{
 				label: 'Signed CZ zones'
+			},
+			{
+				label: 'Signed COM zones'
+			},
+			{
+				label: 'Signed NET zones'
+			},
+			{
+				label: 'Signed EDU zones'
 			}
 		],
 		axes: {							  	
@@ -157,20 +184,24 @@ function updateAge()
 
 function updateGraph()
 {
-	$.get("sidn-dnssec-plot",
-		 function(data) {
-		 	nldata=data;
-		 	$.get("cznic-dnssec-plot",
-		 	function(data) {
-		 		czdata=data;
-		 		$.get("registro-br-dnssec-plot",
-		 		function(data) {
-		 			brdata=data;
-			 		plotData(nldata, czdata, brdata);
-			 	});
-		 	});
-		 }
-	);
+	$.get("sidn-dnssec-plot", function(data) {
+		nldata=data;
+		$.get("cznic-dnssec-plot", function(data) {
+			czdata=data;
+		 	$.get("registro-br-dnssec-plot", function(data) {
+				brdata=data;
+				$.get("com-dnssec-plot", function(data) {
+					comdata=data;
+					$.get("net-dnssec-plot", function(data) {
+						netdata=data;
+						$.get("edu-dnssec-plot", function(data) {
+							plotData(nldata, czdata, brdata, comdata, netdata, data);
+						});
+					});
+				});			
+	 		});
+		});
+	});
 }
 
 $(document).ready(function() {
