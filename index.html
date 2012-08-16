@@ -107,17 +107,17 @@ function plotData(nldata, czdata, brdata)
 		},
 		series:[
 			{
-				label: 'Signed NL zones',
+				label: 'Signed NL delegations',
 				lineWidth: 2,
 				markerOptions: {
 					size: 3.5
 				}
 			},
 			{
-				label: 'Signed BR zones'
+				label: 'Signed CZ delegations'
 			},
 			{
-				label: 'Signed CZ zones'
+				label: 'Signed BR delegations'
 			}
 		],
 		axes: {							  	
@@ -157,13 +157,13 @@ function updateAge()
 
 function updateGraph()
 {
-	$.get("sidn-dnssec-plot",
+	$.get("sidn-dnssec-plot.txt",
 		 function(data) {
 		 	nldata=data;
-		 	$.get("cznic-dnssec-plot",
+		 	$.get("cznic-dnssec-plot.txt",
 		 	function(data) {
 		 		czdata=data;
-		 		$.get("registro-br-dnssec-plot",
+		 		$.get("registro-br-dnssec-plot.txt",
 		 		function(data) {
 		 			brdata=data;
 			 		plotData(nldata, czdata, brdata);
