@@ -40,10 +40,8 @@ src="jqplot/excanvas.min.js"></script><![endif]-->
 
  <script type="text/javascript" src="jqplot/jquery.jqplot.min.js"></script>
  <script type="text/javascript" src="jqplot/plugins/jqplot.dateAxisRenderer.min.js"></script>
- <script type="text/javascript" src="jqplot/plugins/jqplot.barRenderer.min.js"></script>
  <script type="text/javascript" src="jqplot/plugins/jqplot.highlighter.min.js"></script>
  <script type="text/javascript" src="jqplot/plugins/jqplot.cursor.min.js"></script> 
- <script type="text/javascript" src="jqplot/plugins/jqplot.canvasOverlay.js"></script>
  <script type="text/javascript" src="moment.min.js"></script>
  <script type="text/javascript">                                         
 
@@ -157,28 +155,34 @@ function updateAge()
 
 function updateGraph()
 {
-	$.get("sidn-dnssec-plot.txt",
-		 function(data) {
-		 	nldata=data;
-		 	$.get("cznic-dnssec-plot.txt",
-		 	function(data) {
-		 		czdata=data;
-		 		$.get("registro-br-dnssec-plot.txt",
-		 		function(data) {
-		 			brdata=data;
-			 		plotData(nldata, czdata, brdata);
-			 	});
-		 	});
-		 }
-	);
+	var nldata={}, brdata={}, czdata={};
+	
+	function receiveData(data, to) 
+	{
+		to.str=data; 	// we need to do the 'str' thing because
+				// objects are passed by reference
+				// but strings are immutable
+		perhapsShow();
+	}
+	
+	function perhapsShow()
+	{
+		if(nldata.str && brdata.str && czdata.str)
+			plotData(nldata.str, czdata.str, brdata.str);
+	}
+	
+	$.get("sidn-dnssec-plot.txt", function(data) { receiveData(data, nldata); } );
+	$.get("cznic-dnssec-plot.txt", function(data) { receiveData(data, czdata); } );
+	$.get("registro-br-dnssec-plot.txt", function(data) { receiveData(data, brdata); } );
 }
 
 $(document).ready(function() {
+	$.ajaxSetup({cache: false} );
+	moment.lang('en');
 	updateGraph();
 	refreshId = setInterval(updateGraph, 300000);
 	refreshId2 = setInterval(updateAge, 10000);
-	moment.lang('en');
-	$.ajaxSetup({cache: false} );
+
 });
  </script>                                                               
  </head>                                                                 
