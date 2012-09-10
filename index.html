@@ -54,52 +54,45 @@ function makePoints(data)
 	var lines = data.split("\n");					  	
 	for(i = 0; i < lines.length; ++i) {				  	
 		var items = lines[i].split(" ");			  	
-		if(items.length != 2)					  	
-			break;						  	
-		points.push([items[0]*1000, items[1]]);			  	
-	}	
+		if(items.length != 3)					  	
+			break;
+		if (typeof(points[items[1]]) === "undefined") {
+			points[items[1]] = [];
+		}
+		points[items[1]].push([items[0]*1000, items[2]]);			  	
+	}
 	return points;		
 }
 
 // this function gets passed a string containing "time_t value" lines, and
 // plots it to <div id="graph"/>
-function plotData(nldata, czdata, brdata, sedata)
+function plotData(data)
 {
-	var nlpoints=makePoints(nldata);
-	var czpoints=makePoints(czdata);
-	var brpoints=makePoints(brdata);	
-	var sepoints=makePoints(sedata);	
+	var tldpoints=makePoints(data);
+	var points = [];
+	var series = [];
 	
 	var themaxVal=0;
 	themaxTime=0; // global!
-	
-	for(i = 0; i < nlpoints.length; ++i) {	
-		themaxTime = Math.max(themaxTime, nlpoints[i][0]);
-		themaxVal = Math.max(themaxVal, nlpoints[i][1]);			  	
-	}			
 
-	for(i = 0; i < czpoints.length; ++i) {	
-		themaxTime = Math.max(themaxTime, czpoints[i][0]);
-		themaxVal = Math.max(themaxVal, czpoints[i][1]);			  	
-	}			
-
-	for(i = 0; i < brpoints.length; ++i) {	
-		themaxTime = Math.max(themaxTime, brpoints[i][0]);
-		themaxVal = Math.max(themaxVal, brpoints[i][1]);			  	
-	}			
-
-	for(i = 0; i < sepoints.length; ++i) {	
-		themaxTime = Math.max(themaxTime, sepoints[i][0]);
-		themaxVal = Math.max(themaxVal, sepoints[i][1]);			  	
+	var x = 0;
+	for (tld in tldpoints){
+		points[x] = [];
+		series.push({label: 'Signed '+tld.toUpperCase()+' delegations'});
+		for(i = 0; i < tldpoints[tld].length; ++i) {
+			themaxTime = Math.max(themaxTime, tldpoints[tld][i][0]);
+			themaxVal = Math.max(themaxVal, tldpoints[tld][i][1]);
+			points[x].push([tldpoints[tld][i][0], tldpoints[tld][i][1]]);
+		}
+		x++;
 	}
-			
 	if(theGraph)
 		theGraph.destroy();
 	$("#graph").html(""); // clear previous graph
 
-	theGraph = $.jqplot("graph", [nlpoints,czpoints,brpoints,sepoints],
+	theGraph = $.jqplot("graph", points,
 		{								  	
-		title: 'Total number of DNSSEC delegations in the .NL zone: '+nlpoints[nlpoints.length-1][1],
+		title: 'Total number of DNSSEC delegations in the .NL zone: '+tldpoints['nl'][tldpoints['nl'].length-1][1],
 		seriesColors: ["#e38000", "#ff0000", "#0000ff", "#00ff00"],
 		seriesDefaults: { 
 			shadow: false,
@@ -109,24 +102,7 @@ function plotData(nldata, czdata, brdata, sedata)
 				shadow: false
 			}
 		},
-		series:[
-			{
-				label: 'Signed NL delegations',
-				lineWidth: 2,
-				markerOptions: {
-					size: 3.5
-				}
-			},
-			{
-				label: 'Signed CZ delegations'
-			},
-			{
-				label: 'Signed BR delegations'
-			},
-			{
-				label: 'Signed SE delegations'
-			}
-		],
+		series: series,
 		axes: {							  	
 			xaxis: {					  	
 				renderer: $.jqplot.DateAxisRenderer
@@ -164,7 +140,7 @@ function updateAge()
 
 function updateGraph()
 {
-	var nldata={}, brdata={}, czdata={}, sedata={};
+	var data={};
 	
 	function receiveData(data, to) 
 	{
@@ -176,14 +152,11 @@ function updateGraph()
 	
 	function perhapsShow()
 	{
-		if(nldata.str && brdata.str && czdata.str, sedata.str)
-			plotData(nldata.str, czdata.str, brdata.str, sedata.str);
+		if(data.str)
+			plotData(data.str);
 	}
 	
-	$.get("sidn-dnssec-plot.txt", function(data) { receiveData(data, nldata); } );
-	$.get("cznic-dnssec-plot.txt", function(data) { receiveData(data, czdata); } );
-	$.get("registro-br-dnssec-plot.txt", function(data) { receiveData(data, brdata); } );
-	$.get("iis-dnssec-plot.txt", function(data) { receiveData(data, sedata); } );
+	$.get("plot.txt", function(newdata) { receiveData(newdata, data); } );
 }
 
 $(document).ready(function() {

@@ -1,2 +1,0 @@
-#!/bin/sh
-wget -q --no-check-certificate -O - 'https://www.iis.se/domaner/statistik/tillvaxt?chart=per-type' | awk '/text: .*DNSSEC.* 90 dagar/ { startchart = 1 } startchart && $1 == "data:" { print; nextfile }' | tr "[]" "\n\n" | grep Date.UTC | sed -e 's/^Date.UTC(\([0-9]*\), \([0-9]*\), \([0-9]*\)), \([0-9]*\)$/\1 \2 \3 \4/' | tail -n 1 | while read year month day count; do month=`expr $month + 1`; timestamp=`date +%s -d "$year-$month-$day 00:00:00 UTC" 2> /dev/null`; if [ $? = 0 ]; then echo "$timestamp $count"; fi; done
