@@ -1,14 +1,15 @@
 #!/bin/sh
-A=$(echo "$(date +%s) "; echo "nl"; wget -q --no-check-certificate https://www.sidn.nl -O /dev/stdout | grep jq-counter-div | tail -n 1 | cut -d '>' -f 2 | cut -d '<' -f 1)
+A=$(echo "$(date +%s) "; echo "nl"; wget -q --no-check-certificate https://www.sidn.nl -O /dev/stdout | grep jq-counter-div | cut -d '>' -f 2 | cut -d '<' -f 1 | sort -n)
 echo $A
 
 A=$(echo "$(date +%s)"; echo "com"; wget -q -O - http://scoreboard.verisignlabs.com/dnssecScoreboard.js | grep '<th>com</th>' | cut -f5 -d\> | cut -f1 -d\< | sed s/,//)
 echo $A
 
-A=$(echo "$(date +%s) "; echo "cz"; wget -q -O - http://www.nic.cz/ | grep "DNSSEC</a>:" | tr " " "\n" | grep '<strong>' | cut -f2 -d\> | cut -f1 -d\< )
+A=$(echo "$(date +%s) "; echo "cz"; wget -q -O - http://www.nic.cz/ | grep -b1 "DNSSEC</a>:" | tr " " "\n" | grep '<strong>' | cut -f2 -d\> | cut -f1 -d\< | sort -n )
 echo $A
 
-wget -q --no-check-certificate -O - 'https://www.iis.se/domaner/statistik/tillvaxt?chart=per-type' | awk '/text: .*DNSSEC.* 90 dagar/ { startchart = 1 } startchart && $1 == "data:" { print; nextfile }' | tr "[]" "\n\n" | grep Date.UTC | sed -e 's/^Date.UTC(\([0-9]*\), \([0-9]*\), \([0-9]*\)), \([0-9]*\)$/\1 \2 \3 \4/' | tail -n 1 | while read year month day count; do month=`expr $month + 1`; timestamp=`date +%s -d "$year-$month-$day 00:00:00 UTC" 2> /dev/null`; if [ $? = 0 ]; then echo "$timestamp se $count"; fi; done
+SETOTAL=$(wget -q --no-check-certificate -O - 'https://www.iis.se/domaner/statistik/tillvaxt?chart=per-type' | grep -A1 'domainstats_total'|tail -n1|sed 's/[^0-9]//g')
+wget -q --no-check-certificate -O - 'https://www.iis.se/domaner/statistik/tillvaxt?chart=per-type' | awk '/text: .*DNSSEC.* 90 dagar/ { startchart = 1 } startchart && $1 == "data:" { print; nextfile }' | tr "[]" "\n\n" | grep Date.UTC | sed -e 's/^Date.UTC(\([0-9]*\), \([0-9]*\), \([0-9]*\)), \([0-9]*\)$/\1 \2 \3 \4/' | tail -n 1 | while read year month day count; do month=`expr $month + 1`; timestamp=`date +%s -d "$year-$month-$day 00:00:00 UTC" 2> /dev/null`; if [ $? = 0 ]; then echo "$timestamp se $count $SETOTAL"; fi; done
 
-A=$(echo "$(date +%s) "; echo "br"; wget -q -O - http://registro.br/estatisticas.html | grep stat/dnssec.html | grep href | awk '{print $3}' )
+A=$(echo "$(date +%s) "; echo "br"; wget -q -O - http://registro.br/estatisticas.html | egrep 'stat/(dnssec|all).html' | grep href | awk '{print $3}'|sort -n )
 echo $A
