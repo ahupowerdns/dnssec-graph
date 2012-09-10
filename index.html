@@ -54,12 +54,12 @@ function makePoints(data)
 	var lines = data.split("\n");					  	
 	for(i = 0; i < lines.length; ++i) {				  	
 		var items = lines[i].split(" ");			  	
-		if(items.length != 3)					  	
+		if(items.length != 3 && items.length != 4)
 			break;
 		if (typeof(points[items[1]]) === "undefined") {
 			points[items[1]] = [];
 		}
-		points[items[1]].push([items[0]*1000, items[2]]);			  	
+		points[items[1]].push([items[0]*1000, items[2], items[3]]);
 	}
 	return points;		
 }
@@ -78,13 +78,18 @@ function plotData(data)
 	var x = 0;
 	for (tld in tldpoints){
 		points[x] = [];
+		points[x+1] = [];
 		series.push({label: 'Signed '+tld.toUpperCase()+' delegations'});
+		series.push({yaxis: 'y2axis', label: 'Percentage '+tld.toUpperCase()+' delegations', linePattern: 'dashed', showMarker: false});
 		for(i = 0; i < tldpoints[tld].length; ++i) {
 			themaxTime = Math.max(themaxTime, tldpoints[tld][i][0]);
 			themaxVal = Math.max(themaxVal, tldpoints[tld][i][1]);
 			points[x].push([tldpoints[tld][i][0], tldpoints[tld][i][1]]);
+			if(typeof(tldpoints[tld][i][2]) !== 'undefined'){
+				points[x+1].push([tldpoints[tld][i][0], 100*tldpoints[tld][i][1]/tldpoints[tld][i][2]]);
+			}
 		}
-		x++;
+		x+=2;
 	}
 	if(theGraph)
 		theGraph.destroy();
@@ -93,7 +98,8 @@ function plotData(data)
 	theGraph = $.jqplot("graph", points,
 		{								  	
 		title: 'Total number of DNSSEC delegations in the .NL zone: '+tldpoints['nl'][tldpoints['nl'].length-1][1],
-		seriesColors: ["#e38000", "#ff0000", "#0000ff", "#00ff00"],
+		// Boynton's list of 11 colors that are almost never confused
+		seriesColors: ["#FF8000", "#FF8000", "#0000FF", "#0000FF", "#FF0000", "#FF0000", "#00FF00", "#00FF00", "#FFFF00", "#FFFF00", "#FF00FF", "#FF00FF", "#FF8080", "#FF8080", "#808080", "#808080", "#800000", "#800000"],
 		seriesDefaults: { 
 			shadow: false,
 			lineWidth: 2,
@@ -111,6 +117,11 @@ function plotData(data)
 			{						  	
 				min: 0,
 				max: 1.3* themaxVal
+			},
+			y2axis:
+			{
+				min: 0,
+				max: 100
 			}
 		},
 		highlighter: {
