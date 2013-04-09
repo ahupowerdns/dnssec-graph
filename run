@@ -1,0 +1,6 @@
+#!/bin/bash
+./grab-sidn-count >> sidn-dnssec-plot.txt
+./grab-com-count >> com-dnssec-plot.txt
+./grab-iis-count >> iis-dnssec-plot.txt
+./grab-registro-br-count >> registro-br-dnssec-plot.txt
+./grab-cznic-count >> cznic-dnssec-plot.txt
