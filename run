@@ -1,12 +1,12 @@
 #!/bin/bash
-./grab-sidn-count >> sidn-dnssec-plot.full.txt
-./grab-com-count >> com-dnssec-plot.full.txt
-./grab-iis-count >> iis-dnssec-plot.full.txt
-./grab-registro-br-count >> registro-br-dnssec-plot.full.txt
-./grab-cznic-count >> cznic-dnssec-plot.full.txt
+./grab-sidn-count >> sidn-dnssec-plot.txt
+./grab-com-count >> com-dnssec-plot.txt
+./grab-iis-count >> iis-dnssec-plot.txt
+./grab-registro-br-count >> registro-br-dnssec-plot.txt
+./grab-cznic-count >> cznic-dnssec-plot.txt
 
-for a in com-dnssec-plot.full.txt cznic-dnssec-plot.full.txt iis-dnssec-plot.full.txt registro-br-dnssec-plot.full.txt sidn-dnssec-plot.full.txt
-do
-	awk '{if (count++%10==0) print $0;}' $a > $(echo $a | sed s/.full//)
-done
+#for a in com-dnssec-plot.full.txt cznic-dnssec-plot.full.txt iis-dnssec-plot.full.txt registro-br-dnssec-plot.full.txt sidn-dnssec-plot.full.txt
+#do
+#	awk '{if (count++%10==0) print $0;}' $a > $(echo $a | sed s/.full//)
+#done
 
