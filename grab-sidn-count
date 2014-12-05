@@ -1,5 +1,2 @@
 #!/bin/sh
-
-A=$(echo "$(date +%s) ";  wget -q --no-check-certificate https://www.sidn.nl -O /dev/stdout | grep jq-counter-div | tail -n 1 | cut -d '>' -f 2 | cut -d '<' -f 1)
-echo $A
-
+echo -n "$(date +%s) " ; wget -q --no-check-certificate -O /dev/stdout https://www.sidn.nl/ | sed -r 's/.*data-count="([0-9]+).*/\1/' | grep -o '^[0-9]\{1,10\}'
